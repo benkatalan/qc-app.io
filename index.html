@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QC Webapp List</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.container {
+    width: 80%;
+    margin: auto;
+}
+.options-table {
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+}
+</style>
+<script>
+    $(document).ready(function() {
+        $('#exportButton').click(function() {
+            $('#dataTable').tableExport({
+                format: 'xls',
+                filename: 'myTable',
+                sheetname: 'מידע',
+                spaceRows: 2
+            });
+        });
+    });
+</script>
+</head>
+<body>
+    <div class="header">
+        <h1>QC Webapp List</h1>
+        <img src="https://cdn.worldvectorlogo.com/logos/hp-2.svg" alt="HP Logo">
+    </div>
+    <div class="container">
+        <div class="options-table">
+            <table id="topTable">
+                <thead>
+                    <tr>
+                        <th>שם מבצע</th>
+                        <th>מס' מכונה</th>
+                        <th>בחירת מודול</th>
+                        <th>תאריך</th>
+                        <th>שם בודק</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" id="operationName"></td>
+                        <td>
+                            <select id="machineNumber">
+                                <option value="103-exit">103 - יציאה</option>
+                                <option value="104-exit">104 - יציאה</option>
+                                <option value="105-exit">105 - יציאה</option>
+                                <option value="106-exit">106 - יציאה</option>
+                                <option value="107-exit">107 - יציאה</option>
+                                <option value="108-enter">108 - כניסה</option>
+                                <option value="108-exit">108 - יציאה</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="moduleSelect" onchange="updateTable()">
+                                <option value="peExit">Print Engine</option>
+                                <option value="pfExit">PreFeeder</option>
+                                <option value="liftExit">Lift</option>
+                            </select>
+                        </td>
+                        <td><input type="text" id="date"></td>
+                        <td><input type="text" id="testerName"></td>
+                        <td><button id="saveDataBtn">התחל בדיקה</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th value="taskDes">תיאור בדיקה</th>
+                <th value="taskImg">תמונה</th>
+                <th value="taskOper">מבצע</th>
+                <th value="taskCheck">בודק</th>
+                <th value="taskComment">הערות</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- נתוני השורות יהיו מופעלים דינמית -->
+        </tbody>
+    </table>
+    <button id="addRowButton" onclick="addRowButton()">הוסף שורה</button>
+    <button id="saveTableData" onclick="saveFormData(), saveFormDataTODB()">שמור נתונים</button>
+    <button id="exportToExcel" onclick="exportToExcel()">יצא לאקסל</button>
+    <button id="uploadDataFromUser" onclick="uploadDataFromUser()">העלה נתונים</button>
+
+    <!-- חלון פופאפ להצגת התמונה -->
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+<script src="script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tableexport/5.2.0/js/tableexport.min.js"></script>
+</body>
+</html>

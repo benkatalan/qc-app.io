@@ -1,0 +1,189 @@
+*{
+  text-align: center;  
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, sans-serif; /* שימו לב שהפונט כאן משתנה לפי הדרישות */
+}
+
+/* סגנון עבור הכותרת */
+.header {
+    text-align: center;
+    padding: 20px;
+    background-color: #f0f0f0;
+  }
+  
+  .header h1 {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .header img {
+    width: 100px; /* ניתן לשנות גודל כפי שרצוי */
+    height: auto;
+    margin-top: 10px;
+  }
+  
+  /* סגנון עבור טבלה */
+.table-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+#topTable {
+  left: 100;
+  width: 90%;
+  text-align: center;
+  margin-top: 5px;
+}
+
+/* סגנון לטבלה */
+#dataTable {
+    margin: 0 auto; /* מרכז את הטבלה בעמוד */
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  /* סגנון עבור תאים */
+  #dataTable td, #dataTable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, sans-serif; /* שימו לב שהפונט כאן משתנה לפי הדרישות */
+  }
+
+  .table-heading {
+    background-color: #f0f0f0;
+  }
+  
+  /* סגנון לרקע שורות זוגיות */
+  #dataTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  /* סגנון עבור תאים במצב ירוק */
+  .green {
+    background-color: #8bc34a;
+  }
+  
+  /* סגנון עבור תאים במצב אדום */
+  .red {
+    background-color: #f44336;
+  }
+  
+  /* סגנון עבור תאים של select */
+  #dataTable select {
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    background-color: #fff;
+  }
+  
+  /* סגנון עבור תאים של input */
+  #dataTable input[type="text"] {
+    width: calc(100% - 16px); /* רוחב התא פחות הפדינג */
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    background-color: #fff;
+    display: none; /* מחביא את חלון הטקסט בהתחלה */
+  }
+  
+  #addRowButton, 
+  #uploadDataFromUser,
+  #saveTableData,
+  #exportToExcel {
+    margin-top: 10px;
+    background-color: #0096D6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  #addRowButton:hover,
+  #uploadDataFromUser:hover,
+  #saveTableData:hover,
+  #exportToExcel:hover {
+    background-color: #0077B6;
+  }
+
+  /* סגנון עבור חלון הפופאפ */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.9);
+  }
+  
+  /* סגנון עבור תמונת הפופאפ */
+  .modal-content {
+    margin: auto;
+    display: block;
+    max-width: 80%;
+    max-height: 80%;
+  }
+  
+  /* סגנון עבור סגירת הפופאפ */
+  .close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .show-image-button {
+    background-color: #ddbbdd;
+    border: none;
+    color: #000;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 12px;
+  }
+  
+  .show-image-button:hover {
+    background-color: #aabbcc;
+  }
+
+  #saveDataBtn {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background-color: #0096D6;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  #saveDataBtn:hover {
+    background-color: #0077B6;
+  }
