@@ -18,16 +18,6 @@ table {
 }
 </style>
 <script>
-    $(document).ready(function() {
-        $('#exportButton').click(function() {
-            $('#dataTable').tableExport({
-                format: 'xls',
-                filename: 'myTable',
-                sheetname: 'מידע',
-                spaceRows: 2
-            });
-        });
-    });
 </script>
 </head>
 <body>
@@ -70,7 +60,6 @@ table {
                         </td>
                         <td><input type="text" id="date"></td>
                         <td><input type="text" id="testerName"></td>
-                        <td><button id="saveDataBtn">התחל בדיקה</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -90,10 +79,8 @@ table {
             <!-- נתוני השורות יהיו מופעלים דינמית -->
         </tbody>
     </table>
-    <button id="addRowButton" onclick="addRowButton()">הוסף שורה</button>
-    <button id="saveTableData" onclick="saveFormData(), saveFormDataTODB()">שמור נתונים</button>
-    <button id="exportToExcel" onclick="exportToExcel()">יצא לאקסל</button>
-    <button id="uploadDataFromUser" onclick="uploadDataFromUser()">העלה נתונים</button>
+    <button id="addRowButton">הוסף שורה</button>
+    <button id="exportToExcel" onclick="exportTableToExcel()">יצא לאקסל</button>
 
     <!-- חלון פופאפ להצגת התמונה -->
     <div id="imageModal" class="modal">

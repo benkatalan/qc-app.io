@@ -132,31 +132,67 @@ testerCellContent = `
 
       document.getElementById('addRowButton').addEventListener('click', addRow);
 
-      function addRow() {
-        const tableBody = document.querySelector('#dataTable tbody');
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-          <td><input type="text-input" placeholder="הכנס תיאור בדיקה"></td>
+
+      let excelData = [
+        ["מבצע", "מספר מכונה", "מודול", "תאריך", "בודק"]
+    ];
+    
+    function addRow() {
+      const tableBody = document.querySelector('#dataTable tbody');
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+          <td><input type="input" placeholder="...הכנס תיאור בדיקה"></td>
           <td><input type="file" accept="image/*"></td>
-          <td><input type="text-input" placeholder="הכנס מבצע"></td>
-          <td><input type="text-input" placeholder="הכנס בודק"></td>
-          <td><input type="text-input" accept="image/*" placeholder="הכנס הערות"></td>
-        `;
-        tableBody.appendChild(newRow);
-      
-        const fileInput = newRow.querySelector('input[type="file"]');
-        fileInput.addEventListener('change', function() {
+          <td><input type="input" placeholder="...הכנס מבצע"></td>
+          <td><input type="input" placeholder="...הכנס בודק"></td>
+          <td><input type="input" placeholder="...הכנס הערות"></td>
+          <td>
+              <button onclick="deleteRow(this)">X</button>
+              <button onclick="confirmRow(this)">V</button>
+              <span class="confirmation-label" style="display:none;">נשמר</span>
+          </td>
+      `;
+      tableBody.appendChild(newRow);
+  
+      const fileInput = newRow.querySelector('input[type="file"]');
+      fileInput.addEventListener('change', function() {
           const row = this.parentNode.parentNode;
           const imageCell = row.querySelector('td:nth-child(2)');
           const imageButton = document.createElement('button');
           imageButton.textContent = 'הצג תמונה';
           imageButton.addEventListener('click', function() {
-            displayImage(fileInput);
+              displayImage(fileInput);
           });
           imageCell.appendChild(imageButton);
-        });
+      });
+  }
+  
+  function deleteRow(button) {
+      if (confirm('האם אתה בטוח שברצונך למחוק שורה זו?')) {
+          const row = button.closest('tr');
+          row.remove();
       }
-      
+  }
+  
+  function confirmRow(button) {
+    if (confirm('האם אתה בטוח שברצונך לשמור שורה זו?')) {
+        const row = button.closest('tr');
+        const confirmationLabel = row.querySelector('.confirmation-label');
+        confirmationLabel.style.display = 'inline'; // הצג את התווית לאישור
+        button.style.display = 'none'; // הסתר את כפתור האישור
+        row.querySelector('button').style.display = 'none'; // הסתר כפתור המחיקה
+  
+        // קבל את הנתונים מתיבות הטקסט בשורה החדשה והוסף אותם למערך הנתונים לדוח ה-Excel
+        let newRowData = [];
+        row.querySelectorAll('input[type="text,input"]').forEach(input => {
+            newRowData.push(input.value);
+        });
+        excelData.push(newRowData);
+    }
+  }
+    
+
+         
       // פונקציה להצגת התמונה בחלון פופאפ
       function displayImage(input) {
         if (input.files && input.files[0]) {
@@ -176,26 +212,52 @@ testerCellContent = `
       closeButton.addEventListener('click', function() {
         const modal = document.getElementById('imageModal');
         modal.style.display = 'none';
-      });
+      });  
       
     
-    function exportToExcel() {
-      const table = document.getElementById('dataTable');
-      const wb = XLSX.utils.table_to_book(table);
-      XLSX.writeFile(wb, 'data.xlsx');
+      function exportTableToExcel() {
+        // קבלת נתונים מתיבות הטקסט בטופס HTML
+        let operationName = document.getElementById('operationName').value;
+        let machineNumber = document.getElementById('machineNumber').value;
+        let moduleSelect = document.getElementById('moduleSelect').value;
+        let date = document.getElementById('date').value;
+        let testerName = document.getElementById('testerName').value;
+    
+        // יצירת מערך הנתונים לקובץ Excel
+        let excelData = [
+            ["מבצע", "מספר מכונה", "מודול", "תאריך", "בודק"],
+            [operationName, machineNumber, moduleSelect, date, testerName]
+        ];
+    
+        // קבלת נתוני טבלת ה-`dataTable`
+        let tableData = [];
+        let dataTable = document.getElementById('dataTable');
+        for (let i = 0; i < dataTable.rows.length; i++) {
+            let rowData = [];
+            for (let j = 0; j < dataTable.rows[i].cells.length; j++) {
+                rowData.push(dataTable.rows[i].cells[j].textContent);
+            }
+            tableData.push(rowData);
+        }
+    
+        // הוספת נתוני טבלת ה-`dataTable` למערך הנתונים
+        excelData.push(...tableData);
+    
+        // המרת המערך לגיליון בקובץ ה-Excel
+        let ws = XLSX.utils.aoa_to_sheet(excelData);
+    
+        // יצירת קובץ Excel והורדתו
+        let wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Data");
+        XLSX.writeFile(wb, 'downloaded_file_' + getRandomNumbers() + '.xls');
     }
-
-  
-      // בדיקה של קיומו של האלמנט 'machineNumber' לפני הוספת אירוע
-      var machineNumberInput = document.getElementById('machineNumber');
-      if (machineNumberInput) {
-          machineNumberInput.addEventListener('change', function() {
-              displayFormDataByMachine(this.value);
-          });
-      } else {
-          console.error("machineNumber element not found.");
-      }
-
+    
+    function getRandomNumbers() {
+        return Math.floor(Math.random() * 10000); // מספר אקראי בין 0 ל־9999
+    }
+    
+    
+      
 
 // הגדרת פונקציה לטעינת הנתונים מה-localStorage כאשר הדף נטען
 window.addEventListener('load', function() {
@@ -249,170 +311,6 @@ document.getElementById('moduleSelect').addEventListener('change', function() {
   saveSelectedModuleToLocalStorage(this.value);
 });
 
-var db; // משתנה גלובלי למסד הנתונים
-
-// כאשר הדף מטען במלואו
-window.onload = function() {
-  // פתיחת חיבור למסד הנתונים
-  var request = indexedDB.open('my_form_data', 250);
-
-  request.onerror = function(event) {
-      console.error('Error opening database');
-  };
-
-  request.onsuccess = function(event) {
-      var db = event.target.result;
-
-      // הסרת האזנה לאירוע שינוי בבחירת המכונה
-      document.getElementById('machineNumber').removeEventListener('change', saveFormDataWithMachineAndModule);
-
-      // הוספת אירוע שישמע לשינוי בבחירת המכונה
-      document.getElementById('machineNumber').addEventListener('change', function() {
-          // קריאה לפונקציה להצגת הנתונים המאוחסנים במסד הנתונים
-          displayFormDataByMachine(db, this.value);
-      });
-
-      // פונקציה לשמירת הנתונים בבסיס הנתונים עם מספר המכונה ושם המודול
-      function saveFormDataWithMachineAndModule() {
-        var machineNumber = document.getElementById('machineNumber').value;
-        var moduleSelect = document.getElementById('moduleSelect').value;
-    
-        var request = indexedDB.open('my_form_data', 250); // גרסה חדשה לבסיס הנתונים
-    
-        request.onerror = function(event) {
-            console.error('Error opening database');
-        };
-    
-        request.onsuccess = function(event) {
-            var db = event.target.result;
-    
-            // טרנזקציה ראשית עבור form_data
-            var transactionFormData = db.transaction(['form_data'], 'readwrite');
-            var objectStoreFormData = transactionFormData.objectStore('form_data');
-    
-            var formData = {
-                machineModule: machineNumber + '_' + moduleSelect, // חיבור בין מספר המכונה ושם המודול
-                operationName: document.getElementById('operationName').value,
-                date: document.getElementById('date').value,
-                testerName: document.getElementById('testerName').value
-            };
-    
-            var requestFormData = objectStoreFormData.add(formData);
-    
-            requestFormData.onsuccess = function(event) {
-                console.log('Form data saved successfully');
-            };
-    
-            requestFormData.onerror = function(event) {
-                console.error('Error saving form data');
-            };
-    
-            // טרנזקציה נוספת עבור my_object_store
-            var transactionObjectStore = db.transaction(['my_object_store'], 'readwrite');
-            var objectStoreMyObject = transactionObjectStore.objectStore('my_object_store');
-    
-            var machineModuleData = {
-                machineModule: machineNumber + '_' + moduleSelect
-            };
-    
-            var requestMyObjectStore = objectStoreMyObject.add(machineModuleData);
-    
-            requestMyObjectStore.onsuccess = function(event) {
-                console.log('Machine module data saved successfully');
-            };
-    
-            requestMyObjectStore.onerror = function(event) {
-                console.error('Error saving machine module data');
-            };
-        };
-    }
-  
-  };
-};
-
-// פונקציה להצגת הנתונים בטופס על פי בחירת המכונה
-function displayFormDataByMachine(machineNumber) {
-  var request = indexedDB.open('my_form_data', 250);
-
-  request.onerror = function(event) {
-    console.error('Error opening database');
-  };
-
-  request.onsuccess = function(event) {
-    var db = event.target.result;
-
-    // טרנזקציה ראשית עבור form_data
-    var transactionFormData = db.transaction(['form_data'], 'readonly');
-    var objectStoreFormData = transactionFormData.objectStore('form_data');
-    var indexFormData = objectStoreFormData.index('machineModule');
-
-    var getRequestFormData = indexFormData.openCursor(IDBKeyRange.bound(machineNumber + '_', machineNumber + '_z'));
-
-    getRequestFormData.onsuccess = function(event) {
-      var cursor = event.target.result;
-      if (cursor) {
-        console.log(cursor.value); // או עבור על רשומה זו ועדכן את הנתונים בהתאם
-        cursor.continue();
-      } else {
-        console.log('No form data available for the selected machine');
-      }
-    };
-
-    getRequestFormData.onerror = function(event) {
-      console.error('Error retrieving form data by machine number');
-    };
-
-    // טרנזקציה נוספת עבור my_object_store
-    var transactionObjectStore = db.transaction(['my_object_store'], 'readonly');
-    var objectStoreMyObject = transactionObjectStore.objectStore('my_object_store');
-
-    var getRequestMyObject = objectStoreMyObject.openCursor();
-
-    getRequestMyObject.onsuccess = function(event) {
-      var cursor = event.target.result;
-      if (cursor) {
-        console.log(cursor.value); // או עבור על רשומה זו ועדכן את הנתונים בהתאם
-        cursor.continue();
-      } else {
-        console.log('No machine module data available');
-      }
-    };
-
-    getRequestMyObject.onerror = function(event) {
-      console.error('Error retrieving machine module data');
-    };
-  };
-}
-
-  document.getElementById('saveButton').addEventListener('click', function() {
-    saveFormDataWithMachineAndModule();
-  });
-
-// הוספת אירוע לשינוי בבחירת המכונה
-document.getElementById('machineNumber').addEventListener('change', function() {
-  displayFormDataByMachine(this.value);
-});
-
-// יצירת מבנה נתונים לכל מודול
-function createModuleData(operationName, date, testerName) {
-  return {
-      operationName: operationName,
-      date: date,
-      testerName: testerName
-  };
-}
-
-// יצירת מבנה נתונים לכל מכונה
-function createMachineData() {
-  return {
-      peExit: null,
-      pfExit: null,
-      liftExit: null
-  };
-}
-
-// מבנה נתונים למכונה כולל מבנה נתונים לכל מודול
-var machineData = {};
 
 // פונקציה לשמירת נתונים למודול מסוים במכונה מסוימת
 function saveModuleData(machineNumber, moduleName, data) {
@@ -429,6 +327,3 @@ function getModuleData(machineNumber, moduleName) {
     }
     return machineData[machineNumber][moduleName];
 }
-
-
-
